@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
+import SingleProductModal from "./SingleProductModal";
 
 function Products() {
     const [categoryName, setCategoryName] = useState([]);
@@ -9,6 +10,9 @@ function Products() {
 
     const [selectCatName, setSelectCatName] = useState('');
 
+    const [modelStatus, setModelStatus] = useState(false);
+
+    const[singleProductData,setSingleProductData] = useState(null)
 
     let totalCategories = () => {
 
@@ -47,8 +51,17 @@ function Products() {
 
 
     let getSingleProduct = (id) => {
-        alert("hgjhvj");
-        console.log(id);
+
+        setModelStatus(true);
+        setSingleProductData(null);
+
+        axios.get(`https://dummyjson.com/products/${id}`)
+            .then((response) => {
+
+                setSingleProductData(response.data)
+
+                // console.log(response.data);
+            })
     }
 
     useEffect(() => {
@@ -97,10 +110,17 @@ function Products() {
                     <div >
                         <h1 className="text-[40px] font-sans font-[600]">Products</h1>
                         <div className="grid grid-cols-3 gap-5">
-                            <ProductCard products={products} getSingleProduct={getSingleProduct}></ProductCard>
+                            <ProductCard products={products} getSingleProduct={getSingleProduct} singleProductData={singleProductData}></ProductCard>
 
                         </div>
                     </div>
+
+                    {modelStatus ?
+
+                        <SingleProductModal setModelStatus={setModelStatus} singleProductData={singleProductData}></SingleProductModal>
+                        :
+                        ''
+                    }
                 </div>
 
 
@@ -112,6 +132,8 @@ function Products() {
 }
 
 function ProductCard({ products, getSingleProduct }) {
+
+
     return (
 
         <>
@@ -126,7 +148,7 @@ function ProductCard({ products, getSingleProduct }) {
 
                         <>
                             <div className="show-lg bg-white text-center">
-                                <img src={thumbnail} alt="" className="w-[100%] h-[250px]" onClick={() => getSingleProduct(id)} />
+                                <img src={thumbnail} alt="" className="w-[100%] h-[250px]" onClick={() => getSingleProduct(id)} key={index} />
                                 <div className="flex justify-between p-[10px]">
                                     <h3 className=" text-[14px]">Brand: {brand}</h3>
                                     <span>Rs: {price}</span>
