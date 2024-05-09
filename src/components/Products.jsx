@@ -10,14 +10,14 @@ function Products() {
     const [selectCatName, setSelectCatName] = useState('');
 
 
-    let totalCategories = (() => {
+    let totalCategories = () => {
 
         axios.get(`https://dummyjson.com/products/categories`)
             .then((response) => {
                 // console.log(response.data)
                 setCategoryName(response.data);
             })
-    })
+    }
 
     let totalProducts = (() => {
 
@@ -43,10 +43,13 @@ function Products() {
 
                 setProducts(response.data.products);
             })
-
-
     })
 
+
+    let getSingleProduct = (id) => {
+        alert("hgjhvj");
+        console.log(id);
+    }
 
     useEffect(() => {
 
@@ -76,7 +79,7 @@ function Products() {
                                 {
                                     categoryName.map((item, index) => {
                                         return (
-                                            
+
                                             <li className="bg-white p-2 mb-3 text-[18px] cursor-pointer" onClick={() => setSelectCatName(item)} key={index}>{item}</li>
                                         )
 
@@ -94,7 +97,7 @@ function Products() {
                     <div >
                         <h1 className="text-[40px] font-sans font-[600]">Products</h1>
                         <div className="grid grid-cols-3 gap-5">
-                            <ProductCard products={products} ></ProductCard>
+                            <ProductCard products={products} getSingleProduct={getSingleProduct}></ProductCard>
 
                         </div>
                     </div>
@@ -108,7 +111,7 @@ function Products() {
 
 }
 
-function ProductCard({ products }) {
+function ProductCard({ products, getSingleProduct }) {
     return (
 
         <>
@@ -117,16 +120,16 @@ function ProductCard({ products }) {
 
                 products.map((item, index) => {
                     // console.log(item);
-
+                    let { id, thumbnail, brand, price } = item;
 
                     return (
 
                         <>
                             <div className="show-lg bg-white text-center">
-                                <img src={item.thumbnail} alt="" className="w-[100%] h-[250px]" />
+                                <img src={thumbnail} alt="" className="w-[100%] h-[250px]" onClick={() => getSingleProduct(id)} />
                                 <div className="flex justify-between p-[10px]">
-                                    <h3 className=" text-[14px]">Brand: {item.brand}</h3>
-                                    <span>Rs: {item.price}</span>
+                                    <h3 className=" text-[14px]">Brand: {brand}</h3>
+                                    <span>Rs: {price}</span>
                                 </div>
 
 
